@@ -45,5 +45,4 @@ RUN chown -R app:app $APP_HOME
 # change to the app user
 USER app
 
-# run entrypoint.prod.sh
 ENTRYPOINT ["/home/app/django/entrypoint.sh"]
