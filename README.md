@@ -8,6 +8,10 @@
 
 Выполните команду `docker-compose -f docker-compose.prod.yaml up --build`
 
+Затем `docker-compose -f docker-compose.prod.yaml exec django bash`
+
+Затем `celery -A AllProject worker -l INFO` - это команда запустит Celery
+
 Проект будет работать на `127.0.0.1`
 
 # AllProject
