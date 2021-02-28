@@ -39,7 +39,7 @@ def qr_generate(slug):
         box_size=10,
         border=4,
     )
-    qr.add_data(os.getenv('SITE_HOST') + str(slug))
+    qr.add_data(os.getenv('SITE_HOST') + '/' + str(slug))
     qr.make(fit=True)
 
     img = qr.make_image(fill_color="black", back_color="white")
