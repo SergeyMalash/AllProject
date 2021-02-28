@@ -1,0 +1,20 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}Ваши чаты{% endblock %}}
+
+{% block content %}
+    <div class="box">
+    <h4>Ваши чаты</h4>
+        <div class="list-group mb-2">
+            <p><a href="{% url 'search' %}">Найдите собеседника</a></p>
+            {% if object_list %}
+                {% for user in object_list %}
+                    <a href="{% url 'dialog' username=user %}" class="list-group-item list-group-item-action">{{ user }}</a>
+                {% endfor %}
+            {% else %}
+                <p>Вы ни с кем не общались((</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

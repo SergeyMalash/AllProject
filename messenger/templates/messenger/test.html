@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="box">
+        <div id="chat-log-div" style="overflow: auto; display: inline-block; height: 30em;">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi consequatur esse facilis ipsum laborum numquam odio perspiciatis quis, quod ratione suscipit, totam. Deserunt impedit iure nam nisi odit quaerat tempore.
+        </div>
+        <input id="chat-message-input-div" type="text" size="50"><br>
+        <input id="chat-message-submit-div" type="button" value="Send">
+    </div>
+    <p id="chat-id">1</p>
+<script>
+    let messages = null
+
+    window.onload = req;
+
+    const chatId = JSON.parse(document.getElementById('chat-id').textContent);
+
+    async function req() {
+        const response = await fetch('http://127.0.0.1:8000/chat/1/history/', {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            //mode: 'cors', // no-cors, *cors, same-origin
+            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, *same-origin, omit
+        });
+        let messages = await response.json();
+        console.log(messages)
+        return messages
+   }
+</script>
+</body>
+</html>

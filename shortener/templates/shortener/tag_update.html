@@ -1,0 +1,24 @@
+{% extends 'basic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Ваши тэги{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center mt-2">Укажи название тэга</h4>
+        <form method="post" class="mx-auto">{% csrf_token %}
+            {% if form.errors.title %}
+                {% render_field form.title class+="form-control is-invalid" placeholder="Укажи название тэга" %}
+                {% for error in form.errors.title %}
+                    <p class="invalid-feedback mb-0 mt-0">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+                {% render_field form.title class+="form-control mb-2" placeholder="Укажи название тэга" %}
+            {% endif %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mb-2">Изменить</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

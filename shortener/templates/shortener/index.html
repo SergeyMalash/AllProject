@@ -1,0 +1,71 @@
+{% extends 'basic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}URL shortener - Сокращатель ссылок{% endblock %}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center mt-2">Введи ссылку для сокращения</h4>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container">
+                <div class="row">
+                    {% if user.is_authenticated %}
+                        <div class="col-11">
+                            {% if form.errors.full %}
+                                {% render_field form.full class+="form-control is-invalid" placeholder="Укажи полный адрес" %}
+                                {% for error in form.errors.full %}
+                                   <p class="invalid-feedback mb-0">{{ error }}</p>
+                                {% endfor %}
+                            {% else %}
+                            {% render_field form.full class+="form-control mb-2" placeholder="Укажи полный адрес" %}
+                            {% endif %}
+                        </div>
+                        <div class="col-1">
+                            <a data-toggle="collapse" href="#slug-field" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="{% static 'gear.png' %}" alt="">
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="col-12">
+                            {% if form.errors.full %}
+                                {% render_field form.full class+="form-control is-invalid" placeholder="Укажи полный адрес" %}
+                                {% for error in form.errors.full %}
+                                   <p class="invalid-feedback mb-0">{{ error }}</p>
+                                {% endfor %}
+                            {% else %}
+                            {% render_field form.full class+="form-control mb-2" placeholder="Укажи полный адрес" %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% if user.is_authenticated %}
+                <div class="collapse {% if form.errors.slug %}show{% endif %}" id="slug-field">
+                    <div class="form-group mt-2">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">malash.ru/</div>
+                            </div>
+                            {% if form.errors.slug %}
+                                {% render_field form.slug class+="form-control is-invalid" placeholder="Укажи желаемый адрес" %}
+                                {% for error in form.errors.slug %}
+                                   <p class="invalid-feedback mb-0 mt-0">{{ error }}</p>
+                                {% endfor %}
+                            {% else %}
+                            {% render_field form.slug class+="form-control" placeholder="Укажи желаемый адрес" %}
+                            {% endif %}
+                        </div>
+                <div class="mb-2">
+                    {% render_field form.tags class+="custom-select" %}
+                </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mb-2">Сократить</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

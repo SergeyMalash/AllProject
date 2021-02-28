@@ -1,0 +1,45 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}Поиск собеседника{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center">Найдите пользователя, чтобы начать общение</h4>
+        <form action="{% url 'search' %}" method="get">
+            <div class="form-group mb-0">
+                <input name='username' type="search" class="form-control" placeholder="Поиск" value="{{ search_text }}">
+            </div>
+        </form>
+        {% if search_text %}
+            <h4 class="text-center">Результаты поиска по запросу: '{{ search_text }}'</h4>
+            {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="{% url 'search' %}?{% if search_text %}username={{ search_text }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="{% url 'search' %}?{% if search_text %}username={{ search_text }}&{% endif %}page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+                         <li class="page-item active" aria-current="page"><span class="page-link">{{ page_obj.number }}</span></li>
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="{% url 'search' %}?{% if search_text %}username={{ search_text }}&{% endif %}page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                        <li class="page-item"><a class="page-link" href="{% url 'search' %}?{% if search_text %}username={{ search_text }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a></li>
+                    {% else %}
+                      <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+            <div class="list-group mt-2 mb-2">
+                {% if object_list %}
+                    {% for item in page_obj %}
+                        <a href="{% url 'dialog' username=item %}" class="list-group-item list-group-item-action">{{ item }}</a>
+                    {% endfor %}
+                {% else %}
+                        <p class="text-center">Ничего не найдено</p>
+                {% endif %}
+            </div>
+        {% else %}
+        {% endif %}
+    </div>
+{% endblock %}

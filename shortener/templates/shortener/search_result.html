@@ -1,0 +1,55 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Ваши тэги{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        {% if search_text %}
+        <h4 class="text-center">Результаты поиска по запросу: '{{ search_text }}'</h4>
+        <div class="list-group list-group-horizontal">
+            <a href="http://127.0.0.1:8000/search/?search_text={{ search_text }}" class="list-group-item list-group-item-action{% if search_field == 'slug' %} active{% endif %} py-1">Короткая ссылка</a>
+            <a href="http://127.0.0.1:8000/search/?search_text={{ search_text }}&search_field=full" class="list-group-item list-group-item-action{% if search_field == 'full' %} active{% endif %} py-1">Полная ссылка</a>
+            <a href="http://127.0.0.1:8000/search/?search_text={{ search_text }}&search_field=tag" class="list-group-item list-group-item-action{% if search_field == 'tag' %} active{% endif %} py-1">Тэг</a>
+        </div>
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+                     <li class="page-item active" aria-current="page"><span class="page-link">{{ page_obj.number }}</span></li>
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.next_page_number }}">Next</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+        <div class="list-group mt-2 mb-2">
+        {% if search_field == 'tag'%}
+            {% if object_list %}
+                {% for item in page_obj %}
+                    <a href="{% url 'tag_detail' tag=item.title %}" class="list-group-item list-group-item-action">{{ item }}</a>
+                {% endfor %}
+            {% else %}
+                    <p class="text-center">Ничего не найдено</p>
+            {% endif %}
+        {% else %}
+            {% if object_list %}
+                {% for item in page_obj %}
+                    <a href="{% url 'detail_url' slug=item.slug %}" class="list-group-item list-group-item-action">{{ item }}</a>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">Ничего не найдено</p>
+            {% endif %}
+        {% endif %}
+        </div>
+        {% else %}
+               <h4 class="text-center">Задан пустой поисковый запрос</h4>
+        {% endif %}
+    </div>
+{% endblock %}

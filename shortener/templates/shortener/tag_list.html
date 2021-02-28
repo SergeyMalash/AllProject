@@ -1,0 +1,20 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Ваши тэги{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center">Ваши тэги (<a href="{% url 'tag_create' %}">создать</a>)</h4>
+            <div class="list-group mb-2">
+            {% if object_list %}
+                {% for tag in tag_list %}
+                    <a href="{% url 'tag_detail' tag=tag %}" class="list-group-item list-group-item-action">{{ tag }}</a>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">Тэгов нет</p>
+            {% endif %}
+
+            </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'basic.html' %}
+
+{% block title %}Чат{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <div id="messagesList">
+            {% for key, message in object_list.items %}
+                {% if message.user == user.username %}
+                    <div id="{{ key }}" class="row msg_container base_sent">
+                        <div class="col-md-10 col-xs-10">
+                            <div class="messages msg_sent">
+                                <p class="text-right">{{ message.message_text }}</p>
+                                <time datetime="2009-11-13T20:00">{{ message.user }}</time>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-2 avatar">
+                            <img id="avatar" src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg"
+                                 class=" img-responsive ">
+                        </div>
+                    </div>
+                {% else %}
+                    <div id="{{ key }}" class="row msg_container base_receive">
+                        <div class="col-md-2 col-xs-2 avatar">
+                            <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg"
+                                 class=" img-responsive ">
+                        </div>
+                        <div class="col-md-10 col-xs-10">
+                            <div class="messages msg_receive">
+                                <p>{{ message.message_text }}</p>
+                                <time datetime="2009-11-13T20:00">{{ message.user }}</time>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="form-group mt-2 mb-0">
+            <input id="chat-message-input" type="text" class="form-control"><br>
+        </div>
+        <button id="chat-message-submit" type="button" class="btn btn-primary">Send</button>
+    </div>
+
+{{ chat_id|json_script:"chat-id" }}
+{{ username|json_script:"username" }}
+
+<script>
+
+    const chatId = JSON.parse(document.getElementById('chat-id').textContent);
+    const username = JSON.parse(document.getElementById('username').textContent);
+
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + chatId
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        addElement(data)
+    };
+
+    chatSocket.onclose = function (e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function (e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function (e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+
+    function addElement(data) {
+        let newDiv = document.createElement("div");
+        newDiv.setAttribute('id', data.message_id)
+        if (data.username === username ) {
+            newDiv.innerHTML = `
+                <div id="${data.message_id}" class="row msg_container base_receive">
+                    <div class="col-md-2 col-xs-2 avatar">
+                        <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                    </div>
+                    <div class="col-md-10 col-xs-10">
+                        <div class="messages msg_receive">
+                            <p>${data.message}</p>
+                            <time datetime="2009-11-13T20:00">${data.username}</time>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            newDiv.innerHTML = `
+                <div id="${data.message_id}" class="row msg_container base_sent">
+                    <div class="col-md-10 col-xs-10">
+                        <div class="messages msg_sent">
+                            <p>${data.message}</p>
+                            <time datetime="2009-11-13T20:00">${data.username}</time>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-xs-2 avatar">
+                        <img id="avatar" src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                    </div>
+                </div>
+            `;
+        }
+        messagesList.append(newDiv);
+    }
+</script>
+{% endblock %}
+
+

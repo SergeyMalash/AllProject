@@ -1,0 +1,10 @@
+{% extends 'basic.html' %}
+
+{% block title %}Пользователь уже активирован{% endblock %}
+
+{% block content %}
+<div class="box">
+    <p>Пользователь уже активирован</p>
+    <a href="{% url 'login_account' %}">Войти на сайт</a>
+</div>
+{% endblock %}

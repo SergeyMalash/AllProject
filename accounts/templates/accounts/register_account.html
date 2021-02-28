@@ -1,0 +1,59 @@
+{% extends 'basic.html' %}
+{% load widget_tweaks %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Регистрация{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h4 class="text-center mt-2">Регистрация</h4>
+    <form method="post">{% csrf_token %}
+        <div class="form-group">
+            <label for="id_username">Имя пользователя</label>
+            {% if form.errors.username %}
+                {% render_field form.username class="form-control is-invalid" placeholder="Укажи имя пользователя" %}
+                {% for error in form.errors.username %}
+                    <p class="invalid-feedback mb-0">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+            {% render_field form.username class="form-control" placeholder="Укажи имя пользователя" %}
+            {% endif %}
+            <small id="username_help" class="form-text text-muted">Обязательно к заполнению. 150 символов или меньше. Только буквы, цифры и @ /. / + / - / _.</small>
+        </div>
+        <div class="form-group">
+            <label for="id_email">Адрес электронной почты</label>
+            {% if form.errors.email %}
+                {% render_field form.email class="form-control is-invalid" placeholder="Укажи адрес электронной почты" %}
+                {% for error in form.errors.email %}
+                    <p class="invalid-feedback mb-0">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+            {% render_field form.email class="form-control mb-2" placeholder="Укажи адрес электронной почты" %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_first_name">Имя</label>
+            {% render_field form.first_name class="form-control mb-2" placeholder="Укажи имя" %}
+        </div>
+        <div class="form-group">
+            <label for="id_last_name">Фамилия</label>
+            {% render_field form.last_name class="form-control mb-2" placeholder="Укажи фамилию" %}
+        </div>
+        <div class="form-group">
+            <label for="id_password1">Новый пароль</label>
+            {% render_field form.password1 class="form-control" placeholder="Укажи новый пароль" %}
+        </div>
+        <div class="form-group">
+            <label for="id_password2">Повторите новый пароль</label>
+            {% if form.errors.password2 %}
+                {% render_field form.password2 class="form-control is-invalid" placeholder="Укажи новый пароль" %}
+                {% for error in form.errors.password2 %}
+                    <p class="invalid-feedback mb-0">{{ error }}</p>
+                {% endfor %}
+            {% else %}
+            {% render_field form.password2 class="form-control mb-2" placeholder="Повтори новый пароль" %}
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Зарегистрироваться</button>
+    </form>
+</div>
+{% endblock %}

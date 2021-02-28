@@ -1,0 +1,53 @@
+{% extends 'basic.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<div class="box">
+    <div class="container">
+        <div> 
+            {% if user.is_authenticated %}
+            <div>
+                <h4 class="text-center mt-2">Вход уже выполнен. Перейти в <a href="{% url 'detail_account' %}">профиль</a></h4>
+            </div>
+            {% else %}
+            <div>
+                <h4 class="text-center mt-2">Вход в личный кабинет</h4>
+            </div>
+            <form method="post" class="mx-auto">{% csrf_token %}
+                {% if form.non_field_errors %}
+                    {% render_field form.username class+="form-control mb-2 is-invalid" placeholder="Login" %}
+                    {% render_field form.password class+="form-control  is-invalid" placeholder="Password" %}
+                    {% for error in form.non_field_errors %}
+                        <p class="invalid-feedback mb-2"> {{ error }} </p>
+                    {% endfor %}
+                {% else %}
+                {% render_field form.username class+="form-control mb-2" placeholder="Login" %}
+                {% render_field form.password class+="form-control mb-2" placeholder="Password" %}
+                {% endif %}
+                <input type="hidden" name="next" value="{{ next }}">
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary mb-2">Войти</button>
+                </div>
+            </form>
+                <a class="btn btn-light btn-sm" href="{% url 'register_account' %}">Регистрация</a>
+                <a class="btn btn-light btn-sm" href="{% url 'reset_password' %}">Забыли пароль?</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% comment %} <div class="login-box">
+    <h4 class="text-center mt-2">Вход в личный кабинет</h4>
+    
+    {% if user.is_authenticated %}
+    <p>Вы уже выполнили вход</p>
+    {% else %}
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <input type="submit" value="Войти">
+    </form>
+    {% endif %}
+</div> {% endcomment %}
+{% endblock %}

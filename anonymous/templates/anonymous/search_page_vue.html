@@ -1,0 +1,335 @@
+{% extends 'basic.html' %}
+
+{% block content %}
+
+    <div id="app" class="box" v-on:new-search="startSearch">
+        <div style="display: flex; justify-content: space-between">
+            <div><span style="font-size: 30px; font-weight: bold;">Анонимный чат</span></div>
+            <div v-if="chatIsWorking" v-on:click="closeChat">
+                <button class="btn btn-md btn-my1">Отключиться</button>
+            </div>
+        </div>
+        <router-view v-bind:chat-is-working="chatIsWorking"
+                     v-bind:messages="messages"
+                     v-bind:search-process="searchProcess"
+                     v-on:send-message="sendMessage"
+                     v-on:start-search="startSearch"
+                     v-on:new-search="startSearch"
+        ></router-view>
+    </div>
+
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-router"></script>
+    <script src="https://unpkg.com/vuex"></script>
+
+    <!-- Vue templates -->
+    <template id="search-template">
+        <div>
+            <div class="collapse show" id="collapseSearch">
+                <h4>Найди подходящего собеседника и общайтесь анонимно</h4>
+                <h5>Выберите свой пол и возраст</h5>
+                <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myGender" value="male">Мужчина
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myGender" value="female">Женщина
+                    </label>
+                </div>
+                <br>
+                <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" v-model="myAge" value="1">До 18 лет
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myAge" value="2"> 18-21
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myAge" value="3"> 22-25
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myAge" value="4"> 26-30
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="myAge" value="5"> Больше 30 лет
+                    </label>
+                </div>
+                <h5>Выберите пол и возраст собеседника</h5>
+                <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherGender" value="male">Мужчина
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherGender" value="female">Женщина
+                    </label>
+                </div>
+                <br>
+                <div class="btn-group btn-group-toggle mb-2" data-toggle="buttons">
+                    <label class="btn btn-primary active">
+                        <input type="radio" v-model="otherAge" value="1">До 18 лет
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherAge" value="2"> 18-21
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherAge" value="3"> 22-25
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherAge" value="4"> 26-30
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="radio" v-model="otherAge" value="5"> Больше 30 лет
+                    </label>
+                </div>
+            </div>
+            <button id="search-submit" type="submit" class="btn btn-primary my-2"
+                    data-toggle="collapse"
+                    data-target="#collapseSearch"
+                    aria-expanded="true" aria-controls="collapseSearch"
+                    v-on:click="startSearch($event)">
+                Найти
+            </button>
+        </div>
+    </template>
+
+    <template id="chat-template">
+        <div class="main">
+            <div class="container ">
+                <div class="chat-log">
+                    <div class="status_infoc">
+                        <div class="window_chat_line"></div>
+                        <div class="window_chat_statuss">Собеседник найден - общайтесь</div>
+                    </div>
+                    <new-message
+                            v-for="message of messages"
+                            v-bind:message="message"
+                            v-bind:key="message.id">
+                    </new-message>
+                </div>
+            </div>
+            <chat-form v-if="chatIsWorking" v-on:send-message="sendMessage"></chat-form>
+            <chat-end v-else v-on:new-search="newSearch"></chat-end>
+        </div>
+    </template>
+
+    <template id="new-message">
+        <div class="chat-log__item" v-bind:class="{ 'chat-log__item--own': isOwner }">
+            <h3 class="chat-log__author">[[ name ]]
+                <small>14:30</small>
+            </h3>
+            <div class="chat-log__message">[[ message.message ]]</div>
+        </div>
+    </template>
+
+    <template id="chat-form">
+        <div class="chat-form">
+            <div class="container ">
+                <form class="form-horizontal" v-on:submit.prevent="sendMessage">
+                    <div class="row">
+                        <div class="col-sm-10 col-xs-8">
+                            <input v-model="messageText" type="text" class="form-control" id=""
+                                   placeholder="Сообщение"/>
+                        </div>
+                        <div class="col-sm-2 col-xs-4">
+                            <button id='send-message-button' type="submit"
+                                    class="btn btn-success btn-block">Отправить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <template id="chat-end">
+        <div class="status-end navinfo talk_over" style="padding-bottom: 22px;">
+            <div class="talk_over_button_block">
+                <span class="talk_over_text">Чат завершён<br></span>
+                <br>
+                <button v-on:click="newSearch" class="talk_over_button">Начать новый чат</button>
+            </div>
+        </div>
+    </template>
+
+    <!-- Vue app -->
+    <script>
+        // components
+        Search = Vue.component('search', {
+            props: ['searchProcess', 'messages'],
+            data: function () {
+                return {
+                    myGender: '',
+                    myAge: '',
+                    otherGender: '',
+                    otherAge: '',
+                }
+            },
+            methods: {
+                startSearch(event) {
+                    let searchParams = {
+                        'my_age': this.myAge,
+                        'my_gender': this.myGender,
+                        'other_age': this.otherAge,
+                        'other_gender': this.otherGender
+                    }
+                    let check = true
+                    for (let key in searchParams) {
+                        if (searchParams[key] === '') {
+                            alert('Выберите все параметры')
+                            check = false
+                            break
+                        }
+                    }
+                    if (check) {
+                        this.$emit('start-search', searchParams)
+                    } else {
+                        event.stopPropagation()
+                    }
+                },
+            },
+            template: '#search-template'
+        })
+
+        Chat = Vue.component('chat', {
+            props: ['messages', 'chatIsWorking'],
+            methods: {
+                sendMessage(message) {
+                    this.$emit('send-message', {message: message.message})
+                },
+                newSearch() {
+                    this.$emit('new-search')
+                }
+            },
+            template: '#chat-template',
+        })
+
+        ChatForm = Vue.component('chat-form', {
+            data: function () {
+                return {
+                    messageText: '',
+                }
+            },
+            methods: {
+                sendMessage() {
+                    this.$emit('send-message', {message: this.messageText})
+                    this.messageText = ''
+                }
+            },
+            template: '#chat-form',
+        })
+
+        ChatEnd = Vue.component('chat-end', {
+            methods: {
+                newSearch() {
+                    this.$router.push({name: 'search'})
+                }
+            },
+            template: '#chat-end',
+        })
+
+        NewMessage = Vue.component('new-message', {
+            delimiters: ["[[", "]]"],
+            props: ['message'],
+            computed: {
+                isOwner() {
+                    return this.message.owner === 'true';
+                },
+                name() {
+                    return this.message.owner === 'true' ? 'Вы' : 'Кто-то';
+                },
+            },
+            template: '#new-message',
+        })
+
+        // router
+        const routes = [
+            {component: Search, path: '/anonymous/', name: 'search'},
+            {component: Chat, path: '/anonymous/chat/', name: 'chat'},
+        ]
+        const router = new VueRouter({
+            mode: 'history',
+            routes: routes,
+        })
+
+        // app
+        const app = new Vue({
+            router,
+            el: '#app',
+            data: {
+                searchProcess: false,
+                socket: '',
+                messages: [],
+                chatIsWorking: false,
+                searchParams: {},
+            },
+            methods: {
+                closeChat() {
+                    this.chatIsWorking = false
+                    let message = {}
+                    message['type'] = 'close_dialog'
+                    this.socket.send(JSON.stringify(message))
+                },
+                checkParams(event) {
+
+                },
+                startSearch(event) {
+                    console.log(event)
+                    if (this.searchProcess === false) {
+                        this.searchParams = event
+                        let message = {}
+                        message['type'] = 'start_search'
+                        message['content'] = JSON.stringify(this.searchParams)
+                        this.socket.send(JSON.stringify(message));
+                        document.querySelector("#search-submit").innerHTML = 'Идёт поиск... Щёлкни для отмены'
+                        this.searchProcess = true
+                    } else {
+                        this.searchParams = {}
+                        let message = {}
+                        message['type'] = 'cancel_search'
+                        this.socket.send(JSON.stringify(message));
+                        document.querySelector("#search-submit").innerHTML = 'Поиск'
+                        this.searchProcess = false
+                    }
+                },
+                sendMessage(event) {
+                    if (event['message'] !== '') {
+                        let message = {}
+                        message['type'] = 'message_to_dialog'
+                        message['content'] = event
+                        this.socket.send(JSON.stringify(message));
+                    }
+                },
+                socketListener(message) {
+                    const data = JSON.parse(message.data);
+                    if (data['type'] === 'search_complete') {
+                        this.$router.push({name: 'chat'});
+                        this.chatIsWorking = true
+                        this.searchProcess = false
+                    } else if (data['type'] === 'new_message') {
+                        this.messages.push(data)
+                    } else if (data['type'] === 'close_dialog') {
+                        this.chatIsWorking = false
+                    }
+                },
+                socketClosed(message) {
+                    this.chatIsWorking = false
+                },
+                socketInit() {
+                    this.socket = new WebSocket(
+                        'ws://'
+                        + window.location.host
+                        + '/ws/anonymous/'
+                    );
+                    //this.socket.onopen = this.socketOpened;
+                    this.socket.onclose = this.socketClosed;
+                    this.socket.onmessage = this.socketListener;
+                    //this.socket.onerror = this.socketError;
+                }
+            },
+            created() {
+                this.socketInit()
+            },
+        });
+    </script>
+{% endblock %}

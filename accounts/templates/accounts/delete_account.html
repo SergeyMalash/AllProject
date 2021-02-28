@@ -1,0 +1,14 @@
+{% extends 'basic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Профиль - удаление пользователя{% endblock %}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center mt-2">Удалить учётную запись? Отменить это действие невозможно!</h4>
+        <form method="post">{% csrf_token %}
+            <button type="submit" class="btn btn-primary">Удалить</button>
+        </form>
+    </div>
+{% endblock %}

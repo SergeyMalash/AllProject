@@ -1,0 +1,19 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Ссылки с тэгом "{{ tag }}" {% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h4>Ссылки с тэгом "{{ tag }}" (<a href="{% url 'tag_update' tag=tag %}">изменить</a> или <a href="{% url 'tag_delete' tag=tag %}">удалить</a> тэг)</h4>
+        <div class="list-group mb-2">
+            {% if object_list %}
+                {% for url in object_list %}
+                    <a href="{% url 'detail_url' slug=url.slug %}" class="list-group-item list-group-item-action">http://malash.ru/{{ url.slug }}</a>
+                {% endfor %}
+            {% else %}
+                <p>Ссылок нет</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

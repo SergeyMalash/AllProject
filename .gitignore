@@ -1,0 +1,5 @@
+.env.prod
+Pipfile
+Pipfile.lock
+.idea/
+**/migrations/0*

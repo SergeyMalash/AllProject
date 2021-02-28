@@ -1,0 +1,16 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}URL shortener - Сокращатель ссылок - Ваши тэги{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center">Поиск</h4>
+        <p>Поиск производится по наличию в тэге, короткой ссылке, полной ссылке и заголовку конечного сайта (обновляем раз в день)</p>
+        <form action="/search/" method="post"> {% csrf_token %}
+            <div class="form-group mb-0">
+                <input type="search" name="search_text" class="form-control" placeholder="Поиск">
+            </div>
+        </form>
+    </div>
+{% endblock %}

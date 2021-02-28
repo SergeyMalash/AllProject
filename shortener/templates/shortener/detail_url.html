@@ -1,0 +1,77 @@
+{% extends 'basic.html' %}
+
+{% block title %}SuperNet - URL shortener - {{ url.slug }}{% endblock %}}
+
+{% block content %}
+    <div class="toast" role="alert" data-delay="5000" style="position: absolute; top: 70px; right: 20px;">
+        <div class="toast-header">
+            <strong class="mr-auto">Окей!</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            Ссылка создана успешно!
+        </div>
+    </div>
+    <div class="box">
+        <div class="row">
+            <div class="col-4"><p>Короткая ссылка</p></div>
+            <div class="col-8"><p>http://{{ site_host }}/{{ url.slug }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-4"><p>Полная ссылка</p></div>
+            <div class="col-8"><p title="{{ url.full }}">{{ url.full|truncatechars:50 }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-4"><p>Количество переходов</p></div>
+            <div class="col-8"><p>{{ url.counter }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-4"><p>Дата<br>создания</p></div>
+            <div class="col-8"><p>{{ url.created }}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-4"><p>Последний<br>переход</p></div>
+            <div class="col-8"><p>{{ url.last_redirect }}</p></div>
+        </div>
+        {% if url.tags.all %}
+{#            тэги нужно через join в шаблоне соединять #}
+        <div class="row">
+            <div class="col-4"><p>Тэги</p></div>
+            <div class="col-8">
+                {% for tag in url.tags.all %}
+                <a href="{% url 'tag_detail' tag=tag %}">{{ tag }}</a>,
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-4"><p class="parameter">QR-код</p></div>
+            <div class="col-8">
+                <a data-toggle="collapse" href="#show-qr" role="button" aria-expanded="false" aria-controls="collapseExample">Показать</a>
+                <div class="collapse" id="show-qr">
+                    <div class="form-group mt-2">
+                            <div>
+                                <img src="/media/{{ url.qr }}">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if user.username == url.user.username %}
+        <div class="text-center">
+            <h6 class="my-2">Вы создали эту ссылку, поэтому можете <a href="{% url 'change_url' slug=url.slug %}">изменить</a> или
+                <a href="{% url 'delete_url' slug=url.slug %}">удалить</a> её</h6>
+        </div>
+        
+        {% endif %}
+    </div>
+    <!-- <form method="post" class="mx-auto">{% csrf_token %}
+        {{ form.as_p }}
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary mb-2">Изменить</button>
+        </div>
+    </form> -->
+{% endblock %}
