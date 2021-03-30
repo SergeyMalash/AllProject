@@ -1,5 +1,6 @@
 .env.prod
 .env.db.prod
+docker-compose.prod.yml
 Pipfile
 Pipfile.lock
 .idea/

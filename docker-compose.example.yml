@@ -23,9 +23,6 @@ services:
       - db
     expose:
       - 4154
-    volumes:
-      - static_volume:/home/app/ws/static
-      - media_volume:/home/app/ws/media
   db:
     image: postgres:12.0-alpine
     volumes:

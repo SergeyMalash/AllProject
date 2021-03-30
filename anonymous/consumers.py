@@ -111,7 +111,6 @@ class AnonymousChatConsumer(AsyncWebsocketConsumer):
 
     async def new_message(self, event):
         message = event['content']
-        print(self.message)
         await self.send(text_data=json.dumps({
             'type': 'new_message',
             'message': message,
@@ -145,16 +144,15 @@ class AnonymousChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def save_message(self, message_text):
 
-        def get_dialog(self, group_id):
-            self.dialog = AnonDialog.objects.get(id=int(group_id))
+        def get_dialog():
+            self.dialog = AnonDialog.objects.get(id=int(self.group_name))
             return self.dialog
 
         message = AnonMessages.objects.create(
             text=message_text,
-            dialog=self.dialog if self.dialog else get_dialog(self, self.group_name),
+            dialog=self.dialog if self.dialog else get_dialog(),
             user=self.my_user
         )
-        print(message)
         self.dialog.messages.add(message)
         return message
 
