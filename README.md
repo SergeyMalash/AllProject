@@ -4,15 +4,11 @@
 
 Выполните `chmod +x entrypoint.sh`
 
-Удалите окончание `.example` у файла `.env.prod.example` и в нём укажите следующее:
-- логин и пароль от почты, которая будет использоваться для отправки писем.
-- либо в качестве `DJANGO_EMAIL_BACKEND` укажите `django.core.mail.backends.console.EmailBackend` - в этом случае письма будут поступать в консоль DJANGO
+Выполните команду `docker-compose -f docker-compose.example.yaml up --build`
 
-Выполните команду `docker-compose -f docker-compose.prod.yaml up --build`
+Затем `docker-compose -f docker-compose.example.yaml exec django bash`
 
-Затем `docker-compose -f docker-compose.prod.yaml exec django bash`
-
-Затем `celery -A AllProject worker -l INFO` - это команда запустит Celery
+Затем `celery -A AllProject worker -l INFO` - эта команда запустит Celery
 
 Проект будет работать на `127.0.0.1`
 
@@ -26,6 +22,6 @@
 
 Оба чата сделаны через WebSocket.
 
-Анонимный чат сделан на VUE в одном файле.
+Анонимный чат сделан на VUE в одном файле (просто пощупал VUE и JS)
 
-Письма отправляются через Celery
+Письма (регистрация и сброс пароля) отправляются через Celery
