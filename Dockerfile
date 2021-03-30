@@ -16,10 +16,6 @@ RUN apt install musl-dev -y
 RUN apt install netcat -y
 RUN apt install libpq-dev -y
 
-# lint
-RUN pip install --upgrade pip
-COPY . .
-COPY requirements.txt .
 # create directory for the app user
 RUN mkdir -p /home/app
 
@@ -37,6 +33,7 @@ RUN mkdir $APP_HOME/media
 COPY . $APP_HOME
 WORKDIR $APP_HOME
 
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # chown all the files to the app user

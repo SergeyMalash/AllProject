@@ -12,6 +12,5 @@ fi
 
 python manage.py makemigrations
 python manage.py migrate
-python manage.py collectstatic
-#celery -A AllProject worker -l INFO
+python manage.py collectstatic --noinput
 exec "$@"

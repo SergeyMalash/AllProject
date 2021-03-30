@@ -1,5 +1,10 @@
 .env.prod
+.env.db.prod
+docker-compose.prod.yml
 Pipfile
 Pipfile.lock
 .idea/
 **/migrations/0*
+media/*
+__pycache__/
+db.sqlite3
