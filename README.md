@@ -4,6 +4,8 @@
 
 Выполните `chmod +x entrypoint.sh`
 
+Если у вас Windows - для entrypoint.sh поставить line separator LF вместо CRLF (можно сменить в pycharm)
+
 Выполните команду `docker-compose -f docker-compose.example.yml up --build`
 
 Затем `docker-compose -f docker-compose.example.yml exec django bash`
