@@ -4,9 +4,9 @@
 
 Выполните `chmod +x entrypoint.sh`
 
-Выполните команду `docker-compose -f docker-compose.example.yaml up --build`
+Выполните команду `docker-compose -f docker-compose.example.yml up --build`
 
-Затем `docker-compose -f docker-compose.example.yaml exec django bash`
+Затем `docker-compose -f docker-compose.example.yml exec django bash`
 
 Затем `celery -A AllProject worker -l INFO` - эта команда запустит Celery
 
