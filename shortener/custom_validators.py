@@ -4,10 +4,11 @@ from django.utils.deconstruct import deconstructible
 
 @deconstructible
 class SlugValidator:
-    """Проверяет заданный slug и запрещает некоторые из них - ['api', 'account', 'admin', ...]"""
-
+    """Проверяет заданный slug и запрещает некоторые из них"""
     def __call__(self, val):
-        if val in ['api', 'api-auth', 'todo', 'account', 'messenger', 'admin', 'slug', 'urls', 'tags', 'user', 'anonymous']:
+        if val in ['api', 'api-auth', 'todo', 'account', 'messenger', 'admin', 'slug', 'urls', 'tags', 'user',
+                   'anonymous', 'blog', 'search'
+                   ]:
             raise ValidationError('Такой адрес задать нельзя', code='forbidden')
 
         all_symbols = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'

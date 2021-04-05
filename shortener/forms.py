@@ -1,6 +1,5 @@
 from django import forms
 from .models import Url, Tag
-from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
@@ -41,7 +40,3 @@ class TagForm(forms.ModelForm):
                 Q(title=value)):
             raise ValidationError("Такой тэг у Вас уже есть")
         return value
-
-
-class SearchForm(forms.Form):
-    search_text = forms.CharField()

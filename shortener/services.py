@@ -4,11 +4,6 @@ from io import BytesIO
 import qrcode
 import os
 
-def create_new_url(instance):
-    if instance.slug == '':
-        instance.slug = generate_slug()
-    return instance
-
 
 def generate_slug():
     from shortener.models import Url
@@ -46,16 +41,3 @@ def qr_generate(slug):
     qrByte = BytesIO()
     img.save(qrByte)
     return qrByte.getvalue()
-
-
-def search_func(text, field):
-    from shortener.models import Url, Tag
-    if field == 'slug':
-        result = Url.objects.filter(slug__icontains=text)
-    elif field == 'tag':
-        result = Tag.objects.filter(title__icontains=text)
-    elif field == 'full':
-        result = Url.objects.filter(full__icontains=text)
-    else:
-        result = []
-    return result

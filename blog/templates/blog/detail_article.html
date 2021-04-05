@@ -1,0 +1,17 @@
+{% extends 'basic.html' %}
+{% load widget_tweaks %}
+{% block title %}{{ object.title }}{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        <h3>{{ object.title }}</h3>
+        <div>
+            {{ object.text|safe }}
+        </div>
+        <div class="text-center">
+            <h6 class="my-2">Вы создали эту статью, поэтому можете <a href="{% url 'update_article' slug=object.slug %}">изменить</a>
+                или
+                <a href="{% url 'delete_article' slug=object.slug %}">удалить</a> её</h6>
+        </div>
+    </div>
+{% endblock %}

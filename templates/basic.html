@@ -22,11 +22,11 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
-{#                    <form action="{% url 'search' %}" method="get">#}
-{#                        <div class="form-group mb-0">#}
-{#                            <input name='search_text' type="search" class="form-control" placeholder="Поиск">#}
-{#                        </div>#}
-{#                    </form>#}
+                    <form action="{% url 'search' %}" method="get">
+                        <div class="form-group mb-0">
+                            <input name='search_text' type="search" class="form-control" placeholder="Поиск">
+                        </div>
+                    </form>
                     <li class="nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Профиль

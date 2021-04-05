@@ -1,31 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic import ListView
 
 from accounts.models import Account
 from messenger.models import Dialog
-from messenger.services import search_func
-
-
-class SearchView(ListView):
-    template_name = 'messenger/search.html'
-    username = None
-    paginate_by = 10
-
-    def get(self, request, *args, **kwargs):
-        self.username = self.request.GET.get('username', '')
-        return super().get(request, *args, **kwargs)
-
-    def get_queryset(self):
-        search_result = search_func(self.username, self.request.user)
-        return search_result
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-        context['search_text'] = self.username
-        return context
 
 
 class DialogListView(LoginRequiredMixin, ListView):
@@ -56,7 +36,7 @@ class DialogView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = get_object_or_404(Account, username=self.kwargs['username'])
         try:
-                self.chat = Dialog.objects.filter(users=user).filter(users=self.request.user).prefetch_related('messages')[0]
+            self.chat = Dialog.objects.filter(users=user).filter(users=self.request.user).prefetch_related('messages')[0]
         except (Dialog.DoesNotExist, IndexError):
             self.chat = Dialog.objects.create()
             self.chat.users.add(user, self.request.user)

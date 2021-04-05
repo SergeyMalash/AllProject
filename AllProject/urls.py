@@ -8,5 +8,7 @@ urlpatterns = [
     path('messenger/', include('messenger.urls')),
     path('account/', include('accounts.urls')),
     path('anonymous/', include('anonymous.urls')),
+    path('blog/', include('blog.urls')),
+    path('search/', include('search.urls')),
     path('', include('shortener.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
