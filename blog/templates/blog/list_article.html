@@ -1,0 +1,20 @@
+{% extends 'basic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Блог - Мои посты{% endblock %}
+
+{% block content %}
+    <div class="box">
+        {% for article in object_list %}
+            <div class="article">
+                <h1><a href="{%  url 'article' slug=article.slug %}">{{ article.title }}</a></h1>
+                <p>{{ article.text|safe|truncatewords_html:60  }}</p>
+                <div class="post-footer">
+                    <span>{{ article.created|date:"l, d F Y" }}</span>
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}

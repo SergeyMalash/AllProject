@@ -3,8 +3,7 @@ from django.http import Http404
 
 class AddRequestForFormInitMixin:
     """
-    При инициализации формы добавляет в неё 'request'.
-    Из него можем брать 'user', например.
+    При инициализации формы добавляет в неё 'request'. Из него можем брать 'user', например.
     Смотри формы и их конструктор.
     """
     def get_form_kwargs(self):

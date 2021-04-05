@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 
 from AllProject.celery import app
 
+
 @app.task()
 def send_activation_notification(email, token, username):
     send_mail(

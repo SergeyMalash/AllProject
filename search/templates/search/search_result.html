@@ -1,0 +1,148 @@
+{% extends 'basic.html' %}
+{% load static %}
+
+{% block title %}Поиск{% endblock %}}
+
+{% block content %}
+    <div class="box">
+        {% if search_text %}
+            <h4 class="text-center">Результаты поиска по запросу: '{{ search_text }}'</h4>
+            <div class="list-group list-group-horizontal">
+                <a href="/search/?search_text={{ search_text }}"
+                   class="list-group-item list-group-item-action{% if not search_object %} active{% endif %} py-1">Результаты</a>
+                <a href="/search/?search_text={{ search_text }}&search_object=url"
+                   class="list-group-item list-group-item-action{% if search_object == 'url' %} active{% endif %} py-1">Ссылки
+                    <span class="badge badge-light badge-pill">{{ search_result.urls|length }}</span></a>
+                <a href="/search/?search_text={{ search_text }}&search_object=account"
+                   class="list-group-item list-group-item-action{% if search_object == 'account' %} active{% endif %} py-1">Пользователи
+                    <span class="badge badge-light badge-pill">{{ search_result.accounts|length }}</span></a>
+                <a href="/search/?search_text={{ search_text }}&search_object=article"
+                   class="list-group-item list-group-item-action{% if search_object == 'article' %} active{% endif %} py-1">Статьи
+                    <span class="badge badge-light badge-pill">{{ search_result.articles|length }}</span></a>
+            </div>
+            {% if not search_object %}
+                <div class="list-group">
+                    <h4 class="mt-2">Ссылки. Выберите для получения информации</h4>
+                    {% for url in search_result.urls|slice:":3" %}
+                        <a href="{{ url.get_absolute_url }}"
+                           class="list-group-item list-group-item-action">{{ url.slug }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Не найдено
+                        </button>
+                    {% endfor %}
+                    {% if search_result.urls|length > 3 %}
+                        <a href="/search/?search_text={{ search_text }}&search_object=url"
+                           class="list-group-item list-group-item-action list-group-item-dark">Все найденные ссылки
+                            <span class="badge badge-light badge-pill">{{ search_result.urls|length }}</span>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="list-group">
+                    <h4 class="mt-2">Пользователи. Кому написать?</h4>
+                    {% for account in search_result.accounts|slice:":3" %}
+                        <a href="{% url 'dialog' account.username %}"
+                           class="list-group-item list-group-item-action">{{ account.username }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Никого не найдено
+                        </button>
+                    {% endfor %}
+                    {% if search_result.accounts|length > 3 %}
+                        <a href="/search/?search_text={{ search_text }}&search_object=account"
+                           class="list-group-item list-group-item-action list-group-item-dark">Все найденные
+                            пользователи
+                            <span class="badge badge-light badge-pill">{{ search_result.accounts|length }}</span>
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="list-group">
+                    <h4 class="mt-2">Статьи</h4>
+                    {% for article in search_result.articles|slice:":3" %}
+                        <a href="{% url 'article' article.slug %}"
+                           class="list-group-item list-group-item-action">{{ article.slug }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Не найдено
+                        </button>
+                    {% endfor %}
+                    {% if search_result.articles|length > 3 %}
+                        <a href="/search/?search_text={{ search_text }}&search_object=account"
+                           class="list-group-item list-group-item-action list-group-item-dark">Все найденные статьи
+                            <span class="badge badge-light badge-pill">{{ search_result.articles|length }}</span>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if search_object == 'url' %}
+                <div class="list-group mt-2">
+                    {% for url in search_result.urls %}
+                        <a href="{{ url.get_absolute_url }}"
+                           class="list-group-item list-group-item-action">{{ url.slug }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Не найдено
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if search_object == 'account' %}
+                <div class="list-group mt-2">
+                    {% for account in search_result.accounts %}
+                        <a href="{% url 'dialog' account.username %}"
+                           class="list-group-item list-group-item-action">{{ account.username }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Никого не найдено
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if search_object == 'article' %}
+                <div class="list-group mt-2">
+                    {% for article in search_result.articles %}
+                        <a href="{% url 'article' article.slug %}"
+                           class="list-group-item list-group-item-action">{{ article.title }}</a>
+                    {% empty %}
+                        <button type="button" class="list-group-item list-group-item-action" disabled>Не найдено
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {#        {% if is_paginated %}#}
+            {#            <ul class="pagination">#}
+            {#                {% if page_obj.has_previous %}#}
+            {#                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.previous_page_number }}">Previous</a></li>#}
+            {#                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>#}
+            {#                {% else %}#}
+            {#                    <li class="page-item disabled"><span class="page-link">Previous</span></li>#}
+            {#                {% endif %}#}
+            {#                     <li class="page-item active" aria-current="page"><span class="page-link">{{ page_obj.number }}</span></li>#}
+            {#                {% if page_obj.has_next %}#}
+            {#                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>#}
+            {#                    <li class="page-item"><a class="page-link" href="{% url 'detail_user' %}?page={{ page_obj.next_page_number }}">Next</a></li>#}
+            {#                {% else %}#}
+            {#                  <li class="page-item disabled"><span class="page-link">Next</span></li>#}
+            {#                {% endif %}#}
+            {#            </ul>#}
+            {#        {% endif %}#}
+            {#        <div class="list-group mt-2 mb-2">#}
+            {#        {% if search_field == 'tag'%}#}
+            {#            {% if object_list %}#}
+            {#                {% for item in page_obj %}#}
+            {#                    <a href="{% url 'tag_detail' tag=item.title %}" class="list-group-item list-group-item-action">{{ item }}</a>#}
+            {#                {% endfor %}#}
+            {#            {% else %}#}
+            {#                    <p class="text-center">Ничего не найдено</p>#}
+            {#            {% endif %}#}
+            {#        {% else %}#}
+            {#            {% if object_list %}#}
+            {#                {% for item in page_obj %}#}
+            {#                    <a href="{% url 'detail_url' slug=item.slug %}" class="list-group-item list-group-item-action">{{ item }}</a>#}
+            {#                {% endfor %}#}
+            {#            {% else %}#}
+            {#                <p class="text-center">Ничего не найдено</p>#}
+            {#            {% endif %}#}
+            {#        {% endif %}#}
+            {#        </div>#}
+            {#        {% else %}#}
+            {#            <h4 class="text-center">Задан пустой поисковый запрос</h4>#}
+        {% endif %}
+    </div>
+{% endblock %}

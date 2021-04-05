@@ -1,0 +1,12 @@
+{% extends 'basic.html' %}
+
+{% block title %}Удалить статью{% endblock %}
+
+{% block content %}
+    <div class="box">
+        <h4 class="text-center mt-2">Удалить статью "{{ object.title }}"?</h4>
+        <form method="post">{% csrf_token %}
+            <h6 class="text-center"><button type="submit" class="btn btn-primary">Удалить</button></h6>
+        </form>
+    </div>
+{% endblock %}

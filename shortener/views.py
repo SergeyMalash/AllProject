@@ -9,58 +9,35 @@ from django.views.generic.detail import SingleObjectMixin
 from shortener.forms import UrlForm, TagForm
 from shortener.mixin import AddRequestForFormInitMixin
 from shortener.models import Url, Tag
-from shortener.services import create_new_url, search_func, get_obj_and_increase_counter
+from shortener.services import get_obj_and_increase_counter, generate_slug
 
 
 class IndexView(AddRequestForFormInitMixin, CreateView):
     model = Url
     template_name = 'shortener/index.html'
     form_class = UrlForm
-    object = None
 
     def form_valid(self, form):
-        instance = form.save(commit=False)
-        """Если URL создаёт авторизованный пользователь, то создаём его в любом случае"""
+        """Если URL создаёт авторизованный пользователь, то создаём URL в любом случае"""
         if self.request.user.is_anonymous is False:
-            instance.user = self.request.user
-            self.object = create_new_url(instance)
+            form.instance.user = self.request.user
+            if not form.instance.slug:
+                form.instance.slug = generate_slug()
             return super().form_valid(form)
         try:
             """
             Если создаёт аноним и уже есть URL от анонима, то перенаправляем на страницу ранее сохраненного URL -
             новый не создаём
             """
-            self.object = Url.objects.get(full=instance.full, user=None)
+            self.object = Url.objects.get(full=form.instance.full, user=None)
             return HttpResponseRedirect(self.get_success_url())
         except Url.DoesNotExist:
             """Если URL не существует, то создаём новый"""
-            self.object = create_new_url(instance)
+            form.instance.slug = generate_slug()
             return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('detail_url', args=[self.object.slug])
-
-
-class SearchView(LoginRequiredMixin, ListView):
-    template_name = 'shortener/search_result.html'
-    search_text = None
-    search_field = None
-    paginate_by = 10
-
-    def get(self, request, *args, **kwargs):
-        self.search_text = self.request.GET.get('search_text', '')
-        self.search_field = self.request.GET.get('search_field', 'slug')
-        return super().get(request, *args, **kwargs)
-
-    def get_queryset(self):
-        search_result = search_func(self.search_text, self.search_field)
-        return search_result
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=None, **kwargs)
-        context['search_text'] = self.search_text
-        context['search_field'] = self.search_field
-        return context
 
 
 class TagsListView(LoginRequiredMixin, ListView):
@@ -81,7 +58,8 @@ class TagCreate(AddRequestForFormInitMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.user = self.request.user
-        return super().form_valid(form)
+        instance.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class TagDetail(LoginRequiredMixin, ListView):
@@ -124,7 +102,6 @@ class TagDelete(LoginRequiredMixin, DeleteView):
 class UrlsListView(LoginRequiredMixin, ListView):
     """Список ссылок, которые созданы пользователем"""
     template_name = 'shortener/urls_list.html'
-    paginate_by = 10
 
     def get_queryset(self):
         return Url.objects.filter(user=self.request.user.pk)
