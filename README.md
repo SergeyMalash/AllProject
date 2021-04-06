@@ -4,13 +4,16 @@
 
 Выполните `chmod +x entrypoint.sh`
 
-Если у вас Windows - для entrypoint.sh поставить line separator LF вместо CRLF (можно сменить в pycharm)
+Если у вас Windows - для `entrypoint.sh` поставить line separator LF вместо CRLF (можно сменить в pycharm)
 
-Выполните команду `docker-compose -f docker-compose.example.yml up --build`
+Выполните команду `docker-compose -f docker-compose.example.yml up --build` и затем в новом окне последовательно выполните:
 
-Затем `docker-compose -f docker-compose.example.yml exec django bash`
-
-Затем `celery -A AllProject worker -l INFO` - эта команда запустит Celery
+```
+docker-compose -f docker-compose.example.yml exec django bash
+python manage.py create_two_users
+celery -A AllProject worker -l INFO
+```
+Эти команды создадут двух пользователей и запустят Celery
 
 Проект будет работать на `127.0.0.1`
 
@@ -26,4 +29,4 @@
 
 Анонимный чат сделан на VUE в одном файле (просто пощупал VUE и JS)
 
-Письма (регистрация и сброс пароля) отправляются через Celery
+Письма (регистрация и сброс пароля) отправляются через Celery в консоль
