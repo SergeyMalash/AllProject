@@ -45,7 +45,7 @@
                     <div class="form-group mt-2">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
-                                <div class="input-group-text">malash.ru/</div>
+                                <div class="input-group-text">{{ SITE_HOST }}/</div>
                             </div>
                             {% if form.errors.slug %}
                                 {% render_field form.slug class+="form-control is-invalid" placeholder="Укажи желаемый адрес" %}

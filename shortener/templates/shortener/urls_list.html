@@ -31,7 +31,7 @@
             {% endif %}
             <div class="list-group mb-2">
                 {% for url in object_list %}
-                    <a href="{% url 'detail_url' slug=url.slug %}" class="list-group-item list-group-item-action">http://malash.ru/{{ url.slug }}</a>
+                    <a href="{% url 'detail_url' slug=url.slug %}" class="list-group-item list-group-item-action">{{ SITE_HOST }}/{{ url.slug }}</a>
                 {% endfor %}
             </div>
         {% else %}

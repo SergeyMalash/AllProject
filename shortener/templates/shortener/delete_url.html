@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="box">
-        <h4 class="text-center mt-2">Удалить ссылку <a href="{% url 'detail_url' slug=url.slug %}">malash.ru/{{ url.slug }}?</a></h4>
+        <h4 class="text-center mt-2">Удалить ссылку <a href="{% url 'detail_url' slug=url.slug %}">{{ SITE_HOST }}/{{ url.slug }}?</a></h4>
         <form method="post">{% csrf_token %}
             <h6 class="text-center"><button type="submit" class="btn btn-primary">Удалить</button></h6>
         </form>
